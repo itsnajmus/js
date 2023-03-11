@@ -1,82 +1,85 @@
-function OpeningCeremony(callback) {
+function openingCeremony(score, callback) {
     console.log("Let the games begin");
-    const score = { red: 0, yellow: 0, blue: 0, green: 0 };
+  
     setTimeout(() => {
-      Race100M(score, callback);
+      console.log("Opening ceremony finished.");
+      callback(score);
     }, 1000);
   }
   
-  function Race100M(score, callback) {
-    const raceTimes = {
-      red: Math.floor(Math.random() * 6) + 10,
-      yellow: Math.floor(Math.random() * 6) + 10,
-      blue: Math.floor(Math.random() * 6) + 10,
-      green: Math.floor(Math.random() * 6) + 10,
-    };
-  
-    console.log("Race100M score: ", score);
-  
-    const sortedRaceTimes = Object.entries(raceTimes).sort((a, b) => a[1] - b[1]);
-  
-    score[sortedRaceTimes[0][0]] += 50;
-    score[sortedRaceTimes[1][0]] += 25;
-  
-    console.log(`${sortedRaceTimes[0][0]} won the Race100M`);
-  
-    console.log("Race100M updated score: ", score);
+  function race100M(score, callback) {
+    console.log("Race 100M started.");
+    console.log("Previous score:", score);
   
     setTimeout(() => {
-      LongJump(score, callback);
-    }, 1000);
+      let times = { red: getRandomInt(10, 15), blue: getRandomInt(10, 15), green: getRandomInt(10, 15), yellow: getRandomInt(10, 15) };
+      console.log("Race finished.", times);
+  
+      let sortedColors = Object.keys(times).sort((a, b) => times[a] - times[b]);
+      score[sortedColors[0]] += 50;
+      score[sortedColors[1]] += 25;
+  
+      console.log("New score:", score);
+      callback(score);
+    }, 3000);
   }
   
-  function LongJump(score, callback) {
-    const winningColor = ["red", "yellow", "green", "blue"][Math.floor(Math.random() * 4)];
-    console.log(`LongJump winner: ${winningColor}`);
-    score[winningColor] += 150;
+  function longJump(score, callback) {
+    console.log("Long jump started.");
+    console.log("Previous score:", score);
   
-    console.log("LongJump updated score: ", score);
+    let randomColor = Object.keys(score)[getRandomInt(0, 3)];
+    score[randomColor] += 150;
+  
+    console.log(randomColor, "won long jump.");
+    console.log("New score:", score);
   
     setTimeout(() => {
-      HighJump(score, callback);
+      console.log("Long jump finished.");
+      callback(score);
     }, 2000);
   }
   
-  function HighJump(score, callback) {
-    const color = prompt("What colour secured the highest jump?");
+  function highJump(score, callback) {
+    console.log("High jump started.");
+    console.log("Previous score:", score);
   
-    if (color) {
-      const normalizedColor = color.toLowerCase();
-      if (score[normalizedColor] !== undefined) {
-        score[normalizedColor] += 100;
-      } else {
-        console.log("Event was cancelled");
-      }
+    let color = prompt("Which color secured the highest jump?");
+    if (color && score[color]) {
+      score[color] += 100;
+      console.log(color, "won high jump.");
     } else {
-      console.log("Event was cancelled");
+      console.log("Event was cancelled.");
     }
   
-    console.log("HighJump updated score: ", score);
-  
-    AwardCeremony(score);
+    console.log("New score:", score);
+    callback(score);
   }
   
-  function AwardCeremony(score) {
-    console.log("Final scores:");
-    const sortedScores = Object.entries(score).sort((a, b) => b[1] - a[1]);
+  function awardCeremony(score) {
+    console.log("Award ceremony started.");
   
-    console.log(
-      `${sortedScores[0][0]} came first with ${sortedScores[0][1]} points.`
-    );
-    console.log(
-      `${sortedScores[1][0]} came second with ${sortedScores[1][1]} points.`
-    );
-    console.log(
-      `${sortedScores[2][0]} came third with ${sortedScores[2][1]} points.`
-    );
+    let sortedScores = Object.keys(score).sort((a, b) => score[b] - score[a]);
+    console.log("Final score:", score);
+    console.log(sortedScores[0], "came first with", score[sortedScores[0]], "points.");
+    console.log(sortedScores[1], "came second with", score[sortedScores[1]], "points.");
+    console.log(sortedScores[2], "came third with", score[sortedScores[2]], "points.");
   }
   
-  OpeningCeremony(() => {
-    console.log("Sports day is over!");
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+  // Main program
+  let score = { red: 0, blue: 0, green: 0, yellow: 0 };
+  
+  openingCeremony(score, (score) => {
+    race100M(score, (score) => {
+      longJump(score, (score) => {
+        highJump(score, (score) => {
+          awardCeremony(score);
+        });
+      });
+    });
   });
   
